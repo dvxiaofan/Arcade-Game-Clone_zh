@@ -1,3 +1,7 @@
+// 定义宽高常量， 方便后面使用
+const EACHWIDTH = 101;
+const EACHHEIGHT = 83;
+
 // 这是我们的玩家要躲避的敌人
 var Enemy = function(x, y) {
     // 要应用到每个敌人的实例的变量写在这里
@@ -17,7 +21,15 @@ var Enemy = function(x, y) {
 Enemy.prototype.update = function(dt) {
     // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
     // 都是以同样的速度运行的
-    this.x = this.x > 505 ? -80 : this.x + 100 * dt + this.speed;
+
+    // 判断超出边界后复位，并重新设置初试速度
+    if (this.x > 505) {
+      this.x = -EACHHEIGHT;
+      this.y = EACHHEIGHT * Math.ceil(Math.random() * 3) - 25;
+      this.setSpeed();
+    } else {
+      this.x += this.speed + 100 * dt;
+    }
 };
 
 // 此为游戏必须的函数，用来在屏幕上画出敌人，
@@ -34,8 +46,8 @@ Enemy.prototype.setSpeed = function() {
 // 这个类需要一个 update() 函数， render() 函数和一个 handleInput()函数
 var Player = function(x, y) {
   this.sprite = 'images/char-boy.png';
-  this.x = x * 101;
-  this.y = y * 83;
+  this.x = x * EACHWIDTH;
+  this.y = y * EACHHEIGHT;
 }
 
 Player.prototype.update = function(dt) {};
@@ -50,7 +62,7 @@ Player.prototype.handleInput = function() {};
 
 var allEnemies = [];
 for (var i = 0; i < 4; i++) {
-  allEnemies.push(new Enemy(-80, 83 * Math.ceil(Math.random() * 3) - 25));
+  allEnemies.push(new Enemy(-EACHHEIGHT, EACHHEIGHT * Math.ceil(Math.random() * 3) - 25));
 }
 
 var player = new Player(2, 5);
