@@ -1,6 +1,6 @@
 // 定义宽高常量， 方便后面使用
 const EACHWIDTH = 101;
-const EACHHEIGHT = 83;
+const EACHHEIGHT = 84;
 
 // 这是我们的玩家要躲避的敌人
 var Enemy = function(x, y) {
@@ -54,18 +54,60 @@ Player.prototype.update = function(dt) {};
 Player.prototype.render = function(sprite, x, y) {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
-Player.prototype.handleInput = function() {};
+
+// 控制小人移动操作
+Player.prototype.handleInput = function(e) {
+// 判断移动方向并处理临界点
+switch (e) {
+  case "left":
+    if (this.x <= 0) {
+      this.x = this.x;
+      break;
+    }
+    this.x -= EACHWIDTH;
+    break;
+  case "right":
+    if (this.x >= (404)) {
+      this.x = this.x;
+      break;
+    }
+    this.x += EACHWIDTH;
+    break;
+  case "up":
+    if (this.y <= -42) {
+      this.y = this.y;
+      break;
+    }
+    this.y -= EACHHEIGHT;
+    break;
+  case "down":
+    if (this.y >= 378) {
+      this.y = this.y;
+      break;
+    }
+    this.y += EACHHEIGHT;
+    break;
+    default:
+    break;
+}
+
+
+
+
+
+
+};
 
 // 现在实例化你的所有对象
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
 // 把玩家对象放进一个叫 player 的变量里面
 
 var allEnemies = [];
-for (var i = 0; i < 4; i++) {
+for (var i = 0; i < 3; i++) {
   allEnemies.push(new Enemy(-EACHHEIGHT, EACHHEIGHT * Math.ceil(Math.random() * 3) - 25));
 }
 
-var player = new Player(2, 5);
+var player = new Player(2, 4.5);
 
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Player.handleInput()
@@ -77,6 +119,5 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-
     player.handleInput(allowedKeys[e.keyCode]);
 });
