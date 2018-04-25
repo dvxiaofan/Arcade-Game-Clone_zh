@@ -74,7 +74,7 @@ switch (e) {
     this.x += EACHWIDTH;
     break;
   case "up":
-    if (this.y <= -42) {
+    if (this.y <= -8) {
       this.y = this.y;
       break;
     }
@@ -87,15 +87,7 @@ switch (e) {
     }
     this.y += EACHHEIGHT;
     break;
-    default:
-    break;
-}
-
-
-
-
-
-
+  }
 };
 
 // 现在实例化你的所有对象
@@ -107,8 +99,7 @@ for (var i = 0; i < 3; i++) {
   allEnemies.push(new Enemy(-EACHHEIGHT, EACHHEIGHT * Math.ceil(Math.random() * 3) - 25));
 }
 
-var player = new Player(2, 4.5);
-
+var player = new Player(2, 4.9);
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Player.handleInput()
 // 方法里面。你不需要再更改这段代码了。
