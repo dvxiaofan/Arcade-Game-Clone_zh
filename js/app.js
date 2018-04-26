@@ -1,6 +1,6 @@
 // 定义宽高常量， 方便后面使用
-const EACHWIDTH = 101;
-const EACHHEIGHT = 84;
+const H_WIDTH = 101;
+const V_HEIGHT = 84;
 
 // 这是我们的玩家要躲避的敌人
 var Enemy = function(x, y) {
@@ -24,12 +24,13 @@ Enemy.prototype.update = function(dt) {
 
     // 判断超出边界后复位，并重新设置初试速度
     if (this.x > 505) {
-      this.x = -EACHHEIGHT;
-      this.y = EACHHEIGHT * Math.ceil(Math.random() * 3) - 25;
+      this.x = -V_HEIGHT;
+      this.y = V_HEIGHT * Math.ceil(Math.random() * 3) - 25;
       this.setSpeed();
     } else {
       this.x += this.speed + 100 * dt;
     }
+    this.checkCollisions(player);
 };
 
 // 此为游戏必须的函数，用来在屏幕上画出敌人，
@@ -42,12 +43,23 @@ Enemy.prototype.setSpeed = function() {
   this.speed = Math.floor(Math.random() * 5);
 }
 
+// 监测碰撞
+Enemy.prototype.checkCollisions = function(player) {
+  // 判断是否在同一行
+  if((Math.floor(player.y) - 16) === this.y) {
+    // 判断是否碰撞
+    if((player.x - 70) <= this.x && (player.x + 70) >= this.x) {
+      player.reset();
+    }
+  }
+}
+
 // 现在实现你自己的玩家类
 // 这个类需要一个 update() 函数， render() 函数和一个 handleInput()函数
 var Player = function(x, y) {
   this.sprite = 'images/char-boy.png';
-  this.x = x * EACHWIDTH;
-  this.y = y * EACHHEIGHT;
+  this.x = x * H_WIDTH;
+  this.y = y * V_HEIGHT;
 }
 
 Player.prototype.update = function(dt) {};
@@ -57,38 +69,47 @@ Player.prototype.render = function(sprite, x, y) {
 
 // 控制小人移动操作
 Player.prototype.handleInput = function(e) {
-// 判断移动方向并处理临界点
-switch (e) {
+  // 判断移动方向并处理临界点
+  switch (e) {
   case "left":
     if (this.x <= 0) {
       this.x = this.x;
       break;
     }
-    this.x -= EACHWIDTH;
+    this.x -= H_WIDTH;
     break;
   case "right":
     if (this.x >= (404)) {
       this.x = this.x;
       break;
     }
-    this.x += EACHWIDTH;
+    this.x += H_WIDTH;
     break;
   case "up":
     if (this.y <= -8) {
       this.y = this.y;
       break;
     }
-    this.y -= EACHHEIGHT;
+    this.y -= V_HEIGHT;
     break;
   case "down":
     if (this.y >= 378) {
       this.y = this.y;
       break;
     }
-    this.y += EACHHEIGHT;
+    this.y += V_HEIGHT;
     break;
   }
+  // 判断是否移动到顶部水里
+  if(this.y > -10 && this.y < 0) {
+    this.reset();
+  }
 };
+// 游戏角色复位函数
+Player.prototype.reset = function() {
+  this.x = 2 * H_WIDTH;
+  this.y = 4.9 * V_HEIGHT;
+}
 
 // 现在实例化你的所有对象
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
@@ -96,7 +117,7 @@ switch (e) {
 
 var allEnemies = [];
 for (var i = 0; i < 3; i++) {
-  allEnemies.push(new Enemy(-EACHHEIGHT, EACHHEIGHT * Math.ceil(Math.random() * 3) - 25));
+  allEnemies.push(new Enemy(-V_HEIGHT, V_HEIGHT * Math.ceil(Math.random() * 3) - 25));
 }
 
 var player = new Player(2, 4.9);
