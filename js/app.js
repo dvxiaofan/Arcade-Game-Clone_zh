@@ -1,4 +1,4 @@
-// 定义宽高常量， 方便后面使用
+// 定义常量， 方便后面使用
 const H_WIDTH = 101;
 const V_HEIGHT = 84;
 
@@ -17,7 +17,6 @@ var Enemy = function(x, y) {
 
 // 此为游戏必须的函数，用来更新敌人的位置
 // 参数: dt ，表示时间间隙
-
 Enemy.prototype.update = function(dt) {
     // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
     // 都是以同样的速度运行的
@@ -25,11 +24,13 @@ Enemy.prototype.update = function(dt) {
     // 判断超出边界后复位，并重新设置初试速度
     if (this.x > 505) {
       this.x = -V_HEIGHT;
+      // 随机出现在另一行
       this.y = V_HEIGHT * Math.ceil(Math.random() * 3) - 25;
       this.setSpeed();
     } else {
       this.x += this.speed + 100 * dt;
     }
+    // 检查是否碰撞玩家
     this.checkCollisions(player);
 };
 
@@ -67,7 +68,7 @@ Player.prototype.render = function(sprite, x, y) {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// 控制小人移动操作
+// 控制玩家移动操作
 Player.prototype.handleInput = function(e) {
   // 判断移动方向并处理临界点
   switch (e) {
@@ -100,12 +101,14 @@ Player.prototype.handleInput = function(e) {
     this.y += V_HEIGHT;
     break;
   }
+
   // 判断是否移动到顶部水里
   if(this.y > -10 && this.y < 0) {
     this.reset();
   }
 };
-// 游戏角色复位函数
+
+// 游戏玩家复位函数
 Player.prototype.reset = function() {
   this.x = 2 * H_WIDTH;
   this.y = 4.9 * V_HEIGHT;
@@ -117,9 +120,11 @@ Player.prototype.reset = function() {
 
 var allEnemies = [];
 for (var i = 0; i < 3; i++) {
+  // 使初试敌人随机出现在每一行
   allEnemies.push(new Enemy(-V_HEIGHT, V_HEIGHT * Math.ceil(Math.random() * 3) - 25));
 }
 
+// 初始化玩家位置
 var player = new Player(2, 4.9);
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Player.handleInput()
